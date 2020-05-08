@@ -1,0 +1,6 @@
+car
+girl
+man
+news
+people
+view
