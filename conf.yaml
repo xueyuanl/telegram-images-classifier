@@ -1,1 +1,12 @@
+train_image_dir: "~/predefined_photos"  # is a directory of subdirectories of images, defining the classes you want your model to distinguish.
+# predefined_photos
+# |-- girl
+#     |-- a.jpg
+#     |-- b.jpg
+# |-- man
+#     |-- c.jpg
+#     |-- d.jpg
+# |-- building
+#     |-- e.jpg
+#     |-- ...
 path: "~/photos"  # path of the folder which include all the photos you want to classify

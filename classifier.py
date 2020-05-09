@@ -1,8 +1,8 @@
 import logging
 import os
-import yaml
 from random import randint
 
+import yaml
 from PIL import UnidentifiedImageError
 
 from label import label_image
@@ -56,21 +56,21 @@ def main():
             continue
         logging.info('file_path is {}'.format(file_path))
         try:
-            rate, label = label_image(input_mean=0, input_std=255, model_file='new_mobile_model.tflite',
-                                      label_file='class_labels.txt', image=file_path)
+            rate, label = label_image(input_mean=0, input_std=255, model_file='trained_model/new_mobile_model.tflite',
+                                      label_file='trained_model/class_labels.txt', image=file_path)
             logging.info('get class is: {}, rate: {}'.format(label, rate))
             class_path = os.path.join('classified_data', label)
             new_file_name = append_rate_to_file_name(rate, file)
             class_photo(file_path, os.path.join(class_path, new_file_name))
         except UnidentifiedImageError as e:
             logging.info(e)
-            class_path = os.path.join(path, 'error_image')
+            class_path = os.path.join('classified_data', 'error_image')
             create_folder(class_path)
             logging.info('move error image {} to {}'.format(file_path, class_path))
             class_photo(file_path, class_path)
         except ValueError as e:
             logging.info(e)
-            class_path = os.path.join(path, 'value_error_image')
+            class_path = os.path.join('classified_data', 'value_error_image')
             create_folder(class_path)
             logging.info('move value error image {} to {}'.format(file_path, class_path))
             class_photo(file_path, class_path)
