@@ -1,4 +1,6 @@
+animal
 car
+food
 girl
 man
 news
