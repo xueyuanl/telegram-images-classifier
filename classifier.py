@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from random import randint
 
 import yaml
@@ -45,20 +46,39 @@ def append_rate_to_file_name(rate, file):
     return new_file
 
 
+def is_clear_to_classify(rate):
+    """
+    large than 50% is see as sure
+    :param rate:
+    :return: bool
+    """
+    r = str(rate)[2:5]
+    r_int = int(r)
+    return True if r_int > 500 else False
+
+
 def main():
     while True:
         # this file name is supposed not to include space or other illegal characters
         # otherwise, implement format_filename func to filter them.
         file = pick_up_photo(path)
+        if not file:
+            logging.info('photos are classified, wait 60 secs for new input...')
+            time.sleep(60)
+            continue
         logging.info('picked up the photo file name is {}'.format(file))
         file_path = os.path.join(path, file)
-        if os.path.isdir(file_path):
-            continue
         logging.info('file_path is {}'.format(file_path))
         try:
             rate, label = label_image(input_mean=0, input_std=255, model_file='trained_model/new_mobile_model.tflite',
                                       label_file='trained_model/class_labels.txt', image=file_path)
             logging.info('get class is: {}, rate: {}'.format(label, rate))
+            if not is_clear_to_classify(rate):
+                logging.info('not sure belong to which class, move to not sure.')
+                class_path = os.path.join('classified_data', 'notsure')
+                new_file_name = append_rate_to_file_name(rate, file)
+                class_photo(file_path, os.path.join(class_path, new_file_name))
+                continue
             class_path = os.path.join('classified_data', label)
             new_file_name = append_rate_to_file_name(rate, file)
             class_photo(file_path, os.path.join(class_path, new_file_name))
@@ -73,6 +93,12 @@ def main():
             class_path = os.path.join('classified_data', 'value_error_image')
             create_folder(class_path)
             logging.info('move value error image {} to {}'.format(file_path, class_path))
+            class_photo(file_path, class_path)
+        except OSError as e:
+            logging.info(e)
+            class_path = os.path.join('classified_data', 'truncated_images')
+            create_folder(class_path)
+            logging.info('move truncated image {} to {}'.format(file_path, class_path))
             class_photo(file_path, class_path)
 
 

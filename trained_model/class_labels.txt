@@ -4,5 +4,4 @@ food
 girl
 man
 news
-people
 view

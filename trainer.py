@@ -148,12 +148,11 @@ def _ensure_tf2():
         raise ImportError("Sorry, this program needs TensorFlow 2.")
 
 
-with open('conf.yaml') as f:
-    train_image_dir = yaml.safe_load(f)['train_image_dir']
-
-
 def train_images():
     """Entry point equivalent to executing this file."""
+    with open('conf.yaml') as f:
+        train_image_dir = yaml.safe_load(f)['train_image_dir']
+
     _ensure_tf2()
     main(train_image_dir)
 
